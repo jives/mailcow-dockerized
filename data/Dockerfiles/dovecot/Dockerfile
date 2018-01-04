@@ -13,6 +13,13 @@ RUN apt-get update && apt-get -y install \
 	ca-certificates \
 	cpanminus \
 	curl \
+	dovecot-core \
+	dovecot-imapd \
+	dovecot-lmtpd \
+	dovecot-mysql \
+	dovecot-managesieved \
+	dovecot-pop3d \
+	dovecot-sieve \
 	default-libmysqlclient-dev \
 	libauthen-ntlm-perl \
 	libbz2-dev \
@@ -52,21 +59,21 @@ RUN apt-get update && apt-get -y install \
 	&& rm -rf /var/lib/apt/lists/*
 
 
-RUN curl https://www.dovecot.org/releases/2.2/dovecot-$DOVECOT_VERSION.tar.gz | tar xvz  \
-	&& cd dovecot-$DOVECOT_VERSION \
-	&& ./configure --with-mysql --with-lzma --with-lz4 --with-ssl=openssl --with-notify=inotify --with-storages=mdbox,sdbox,maildir,mbox,imapc,pop3c --with-bzlib --with-zlib \
-	&& make -j3 \
-	&& make install \
-	&& make clean \
-	&& cd .. && rm -rf dovecot-$DOVECOT_VERSION \
-	&& curl https://pigeonhole.dovecot.org/releases/2.2/dovecot-2.2-pigeonhole-$PIGEONHOLE_VERSION.tar.gz | tar xvz  \
-	&& cd dovecot-2.2-pigeonhole-$PIGEONHOLE_VERSION \
-	&& ./configure \
-	&& make -j3 \
-	&& make install \
-	&& make clean \
-	&& cd .. \
-  && rm -rf dovecot-2.2-pigeonhole-$PIGEONHOLE_VERSION
+#RUN curl https://www.dovecot.org/releases/2.2/dovecot-$DOVECOT_VERSION.tar.gz | tar xvz  \
+#	&& cd dovecot-$DOVECOT_VERSION \
+#	&& ./configure --with-mysql --with-lzma --with-lz4 --with-ssl=openssl --with-notify=inotify --with-storages=mdbox,sdbox,maildir,mbox,imapc,pop3c --with-bzlib --with-zlib \
+#	&& make -j3 \
+#	&& make install \
+#	&& make clean \
+#	&& cd .. && rm -rf dovecot-$DOVECOT_VERSION \
+#	&& curl https://pigeonhole.dovecot.org/releases/2.2/dovecot-2.2-pigeonhole-$PIGEONHOLE_VERSION.tar.gz | tar xvz  \
+#	&& cd dovecot-2.2-pigeonhole-$PIGEONHOLE_VERSION \
+#	&& ./configure \
+#	&& make -j3 \
+#	&& make install \
+#	&& make clean \
+#	&& cd .. \
+#  && rm -rf dovecot-2.2-pigeonhole-$PIGEONHOLE_VERSION
 
 RUN cpanm Data::Uniqid Mail::IMAPClient String::Util
 RUN echo '* * * * *   root   /usr/local/bin/imapsync_cron.pl' > /etc/cron.d/imapsync
@@ -90,11 +97,11 @@ RUN chmod +x /usr/local/lib/dovecot/sieve/rspamd-pipe-ham \
 	/usr/local/bin/imapsync
 
 RUN groupadd -g 5000 vmail \
-	&& groupadd -g 401 dovecot \
-	&& groupadd -g 402 dovenull \
-	&& useradd -g vmail -u 5000 vmail -d /var/vmail \
-	&& useradd -c "Dovecot unprivileged user" -d /dev/null -u 401 -g dovecot -s /bin/false dovecot \
-	&& useradd -c "Dovecot login user" -d /dev/null -u 402 -g dovenull -s /bin/false dovenull
+#	&& groupadd -g 401 dovecot \
+#	&& groupadd -g 402 dovenull \
+	&& useradd -g vmail -u 5000 vmail -d /var/vmail
+#	&& useradd -c "Dovecot unprivileged user" -d /dev/null -u 401 -g dovecot -s /bin/false dovecot \
+#	&& useradd -c "Dovecot login user" -d /dev/null -u 402 -g dovenull -s /bin/false dovenull
 
 RUN touch /etc/default/locale
 RUN apt-get purge -y build-essential automake autotools-dev \

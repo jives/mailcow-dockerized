@@ -1,4 +1,4 @@
-FROM php:7.1-fpm-alpine
+FROM php:7.2-fpm-alpine
 LABEL maintainer "Andre Peters <andre.peters@servercow.de>"
 
 ENV REDIS_PECL 3.1.4
@@ -20,7 +20,7 @@ RUN apk add -U --no-cache libxml2-dev \
 	g++ \
 	make \
 	openssl \
-	openssl-dev \
+	libressl-dev \
 	samba-client \
 	libpng \
 	libpng-dev \
