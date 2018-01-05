@@ -1,5 +1,5 @@
 bind_socket = "*:11334";
-enable_password = "$2$pppq86q9uns51zd5ekfxecj7bxwaefo3$p7f9xdhamydjhtypcr639it3kqeiknx3dk9on7skjypyi8uwwcmy";
+enable_password = "$2$5k5g1uxmqzbinnh5n1ommz777k3njweh$6and4odg6gskarn835yyi5no4czq1tc9xc88sr33ksm8jr4dsxob"; 
 secure_ip = "192.168.0.0/16";
 secure_ip = "172.16.0.0/12";
 secure_ip = "10.0.0.0/8";
