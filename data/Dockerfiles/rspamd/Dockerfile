@@ -16,29 +16,19 @@ RUN apt-get update && apt-get install -y \
 	git \
 	libevent-dev \
 	libfann-dev \
-	libgd-dev \
 	libglib2.0-dev \
 	libicu-dev \
-	libjemalloc-dev \
+	liblua5.1-dev \
 	libmagic-dev \
 	libsqlite3-dev \
 	libssl-dev \
+	lua5.1 \
 	make \
 	openssl \
 	ragel \
 	sqlite3 \
 	&& rm -rf /var/lib/apt/lists/*
 
-RUN git clone http://luajit.org/git/luajit-2.0.git \
-	&& cd luajit-2.0 \
-	&& git checkout v2.1 \
-	&& make -j4 \
-	&& make install \
-	&& make clean \
-	&& ln -sf luajit-2.1.0-beta3 /usr/local/bin/luajit \
-	&& ldconfig \
-	&& cd .. && rm -rf luajit-2.0
-	
 RUN git clone --recursive https://github.com/vstakhov/rspamd.git \
 	&& mkdir rspamd.build && cd rspamd.build \
 	&& cmake ../rspamd \
@@ -57,20 +47,6 @@ RUN git clone --recursive https://github.com/vstakhov/rspamd.git \
   		-DLIBDIR=/usr/lib/rspamd \
   		-DINCLUDEDIR=/usr/include \
   		-DSYSTEMDDIR=/lib/systemd/system \
-  		-DNO_SHARED=ON \
-  		-DCMAKE_BUILD_TYPE=ReleaseWithDebInfo \
-  		-DDEBIAN_BUILD=1 \
-  		-DINSTALL_EXAMPLES=ON \
-  		-DFORCE_GMIME24=ON \
-  		-DENABLE_JEMALLOC=ON \
-  		-DENABLE_OPTIMIZATION=OFF \
-  		-DENABLE_FULL_DEBUG=OFF \
-  		-DENABLE_GD=ON \
-  		-DENABLE_PCRE2=OFF \
-  		-DENABLE_HIREDIS=ON \
-  		-DENABLE_LUAJIT=ON \
-  		-DENABLE_TORCH=ON \
-  		-DWANT_SYSTEMD_UNITS=ON \
 	&& make -j4 \
 	&& make install \
 	&& make clean \
