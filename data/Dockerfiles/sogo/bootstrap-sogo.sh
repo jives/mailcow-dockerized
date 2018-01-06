@@ -22,7 +22,8 @@ LEFT OUTER JOIN grouped_domain_alias_address gda ON gda.username = mailbox.usern
 WHERE mailbox.active = '1';
 EOF
 
-
+mkdir -p /var/run/sogo/
+touch /var/run/sogo/sogo.pid
 mkdir -p /var/lib/sogo/GNUstep/Defaults/
 
 # Generate plist header with timezone data
@@ -97,7 +98,7 @@ echo '    </dict>
 </plist>' >> /var/lib/sogo/GNUstep/Defaults/sogod.plist
 
 # Fix permissions
-chown sogo:sogo -R /var/lib/sogo/
+chown sogo:sogo -R /var/lib/sogo/ /var/run/sogo/
 chmod 600 /var/lib/sogo/GNUstep/Defaults/sogod.plist
 
 exec gosu sogo /usr/sbin/sogod

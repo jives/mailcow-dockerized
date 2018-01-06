@@ -37,7 +37,10 @@ RUN mkdir /usr/share/doc/sogo \
 	&& echo '* * * * *   sogo   /usr/sbin/sogo-ealarms-notify 2>/dev/null' > /etc/cron.d/sogo \
 	&& echo '* * * * *   sogo   /usr/sbin/sogo-tool expire-sessions 60' >> /etc/cron.d/sogo \
 	&& echo '0 0 * * *   sogo   /usr/sbin/sogo-tool update-autoreply -p /etc/sogo/sieve.creds' >> /etc/cron.d/sogo \
-	&& touch /etc/default/locale
+	&& touch /etc/default/locale \
+	# update sogo user created by the official debian package
+	# to match the user created by the sogo package
+	&& usermod -m -c "SOGo daemon" -d /var/lib/sogo sogo
 
 COPY ./bootstrap-sogo.sh /
 COPY syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
