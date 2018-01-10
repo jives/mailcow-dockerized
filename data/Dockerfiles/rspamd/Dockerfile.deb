@@ -1,0 +1,58 @@
+FROM debian:sid-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV LC_ALL C
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	apt-transport-https \
+	adduser \
+	build-essential \
+	ca-certificates \
+	cmake \
+	debhelper \
+	devscripts \
+	dh-systemd \
+	dpkg-dev \
+	fakeroot \
+	gnupg2 \
+	libcurl4-openssl-dev \
+	libevent-dev \
+	libfann-dev \
+	libgd-dev \
+	libglib2.0-dev \
+	libicu-dev \
+	libjemalloc-dev \
+	libluajit-5.1-dev \
+	libmagic-dev \
+	libpcre3-dev \
+	libsqlite3-dev \
+	libssl-dev \
+	lsb-base \
+	perl \
+	ragel \
+	zlib1g-dev \
+	&& apt-key adv --fetch-keys https://rspamd.com/apt/gpg.key \
+	&& echo "deb http://rspamd.com/apt/ sid main" > /etc/apt/sources.list.d/rspamd.list \
+	&& echo "deb-src http://rspamd.com/apt/ sid main" >> /etc/apt/sources.list.d/rspamd.list \
+	&& mkdir -p build && cd build \
+	&& apt-get update && apt-get source rspamd \
+	&& cd rspamd-1.7.0 \
+	&& dpkg-buildpackage -rfakeroot -uc -b -d -j4 \
+	&& cd .. && dpkg -i rspamd_*.deb \
+	&& cd .. && rm -rf build \ 
+	&& rm -rf /var/lib/apt/lists/* \
+	&& echo '.include $LOCAL_CONFDIR/local.d/rspamd.conf.local' > /etc/rspamd/rspamd.conf.local \
+	&& apt-get autoremove --purge \
+	&& apt-get clean \
+	&& mkdir -p /run/rspamd \
+	&& chown _rspamd:_rspamd /run/rspamd
+
+COPY settings.conf /etc/rspamd/modules.d/settings.conf
+#COPY ratelimit.lua /usr/share/rspamd/lua/ratelimit.lua
+#COPY lua_util.lua /usr/share/rspamd/lib/lua_util.lua
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY tini-arm64 /sbin/tini
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+CMD ["/usr/bin/rspamd", "-f", "-u", "_rspamd", "-g", "_rspamd"]
