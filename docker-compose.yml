@@ -62,8 +62,7 @@ services:
             - clamd
 
     rspamd-mailcow:
-#      image: mailcow/rspamd:1.14
-      image: mailcow/rspamd:latest
+      image: mailcow/rspamd:1.14
       build: ./data/Dockerfiles/rspamd
       stop_grace_period: 30s
       depends_on:
@@ -93,6 +92,7 @@ services:
         - redis-mailcow
       volumes:
         - ./data/web:/web:rw
+        - ./data/rainloop:/srv/webmail:rw
         - ./data/conf/rspamd/dynmaps:/dynmaps:ro
         - dkim-vol-1:/data/dkim
       environment:
@@ -228,6 +228,7 @@ services:
         - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
       volumes:
         - ./data/web:/web:ro
+        - ./data/rainloop:/srv/webmail:ro
         - ./data/conf/rspamd/dynmaps:/dynmaps:ro
         - ./data/assets/ssl/:/etc/ssl/mail/:ro
         - ./data/conf/nginx/:/etc/nginx/conf.d/:rw
